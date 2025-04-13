@@ -1,9 +1,7 @@
 # nk10
 
-✨ One-function nk10 encoder/decoder using Hangul syllables (base-10000)  
-**nk10 – Number Kilo 10 Numeric system (만진수)**
-
----
+nk10: Hangul-only base-10000 numeral encoder/decoder  
+**nk10 – 만진수 기반 정보 압축**
 
 ## Install
 
@@ -14,19 +12,9 @@ pip install nk10
 ## Usage
 
 ```python
-import nk10
+from nk10 import encode_nk10, decode_nk10
 
-nk10(123456)     # → '각갛' 등 한글 조합 문자열
-nk10('각갛')     # → 123456
+s = encode_nk10(987654)
+n = decode_nk10(s)
+print(s, n)
 ```
-
-## Concept
-
-- Pass `int` → returns nk10 Hangul string.
-- Pass `str` → returns original integer.
-- Based on Unicode range U+AC00 ~ U+AC00+9999 ('가' ~ ).
-- Lexicographically sortable & compact.
-
-## License
-
-MIT

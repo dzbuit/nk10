@@ -1,40 +1,32 @@
 """
-✨ One-function nk10 encoder/decoder using Hangul syllables (base-10000)
+nk10 - 10KN: Man-Jinsu (만진수) numeral system using Hangul only
 
-nk10 - Number Kilo 10 Numeric system (만진수)
-
-- 한글 음절 기반 10,000진법 숫자 체계
-- 범위: U+AC00 ~ U+AC00+9999 ('가' ~ )
+- 한글 기반 10,000진법 숫자 체계
+- 범위: '가'(U+AC00)부터 시작하는 Hangul Syllables
 - 정렬 가능: 유니코드 순서 = 숫자 크기
+- 정보 압축력 우수, 한글 전용
 - 설계: blueradiance (2025)
 """
 
-BASE = 10000
-OFFSET = 0xAC00  # Unicode starting point for Hangul syllables
+BASE_10KN = 10000
+HANGUL_OFFSET = 0xAC00  # '가' = 0
 
-def _encode(n: int) -> str:
+def encode_nk10(n: int) -> str:
     if n == 0:
-        return chr(OFFSET)
+        return chr(HANGUL_OFFSET)
     result = []
     while n > 0:
-        result.insert(0, chr(OFFSET + (n % BASE)))
-        n //= BASE
+        digit = n % BASE_10KN
+        ch = chr(HANGUL_OFFSET + digit)
+        result.insert(0, ch)
+        n //= BASE_10KN
     return ''.join(result)
 
-def _decode(s: str) -> int:
-    total = 0
+def decode_nk10(s: str) -> int:
+    n = 0
     for ch in s:
-        val = ord(ch) - OFFSET
-        if not (0 <= val < BASE):
+        val = ord(ch) - HANGUL_OFFSET
+        if not (0 <= val < BASE_10KN):
             raise ValueError(f"Invalid nk10 character: '{ch}'")
-        total = total * BASE + val
-    return total
-
-def nk10(x):
-    """Pass int → encode / str → decode"""
-    if isinstance(x, int):
-        return _encode(x)
-    elif isinstance(x, str):
-        return _decode(x)
-    else:
-        raise TypeError("nk10() only accepts int or str")
+        n = n * BASE_10KN + val
+    return n
